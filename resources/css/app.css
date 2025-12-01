@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+[x-cloak] {
+    display: none;
+}
+
+.flex {
+    min-width: 0;
+}
+
+@layer base {
+    input[type="text"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+    .v-select input:focus,
+    .v-select input:focus-visible {
+        outline: none;
+        box-shadow: none;
+    }
+}
+
+.zoom-image {
+    transition: transform 0.8s ease;
+    display: block;
+    width: 100%;
+}
+
+.zoom-image:hover {
+    transform: scale(1.15);
+}
+
+.brand, h1, h2, h3 {
+    font-family: "Playfair Display", serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-variation-settings:
+            "wdth" 100;
+}
+
+.brand.semibold {
+    font-weight: 400 !important;
+}
+
+.brand.bold {
+    font-weight: 900 !important;
+}
+
+.brand-color {
+    color: #f99c19 !important;
+}
+
+.brand-bg {
+    background: #f99c19 !important;
+}
+
+.brand-bg-grey {
+    background: #f7f7f7 !important;
+}
+
+.card, .card:hover, .card:active,
+.card *, .card:hover *, .card:active * {
+    background-color: transparent !important;
+}
+
+.main-input {
+    width: 100%;
+    height: 50px;
+    border: 1px solid #aaa;
+}
+
+.rounded-5xl {
+    border-radius: 40px !important;
+}
+
+.rounded-7xl {
+    border-radius: 80px !important;
+}
+
+.button {
+    cursor: pointer;
+    padding: 7px 25px;
+    background: #000;
+    color: #fff;
+}
+
+.button.white {
+    background: #fff;
+    color: #000;
+}
+
+.modal-title {
+    @apply text-3xl font-normal mb-3;
+}
+
+
+.modal-subtitle {
+    @apply text-xl font-bold mb-1;
+}
