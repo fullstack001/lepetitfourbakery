@@ -26,6 +26,7 @@ Route::middleware('team')->prefix('admin')->group(function() {
             Route::post('saveProducts/{category}', [ProductsController::class, 'saveEventsMenuProducts'])->name('admin.events_menu.products.save');
             Route::post('update-events-menu-category/{category}', [ProductsController::class, 'updateEventsMenuCategory'])->name('admin.events_menu.update_category');
             Route::post('create-events-menu-category', [ProductsController::class, 'createEventsMenuCategory'])->name('admin.events_menu.create_category');
+            Route::post('delete-events-menu-category/{category}', [ProductsController::class, 'deleteEventsMenuCategory'])->name('admin.events_menu.delete_category');
         });
 
         // SETTINGS

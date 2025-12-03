@@ -149,12 +149,12 @@ onBeforeUnmount(() => {
                   <v-btn class="mx-2 rounded-pill" variant="outlined"
                          append-icon="mdi-open-in-new"
                          href="https://order.toasttab.com/online/le-petit-four-bakery-380-washington-street"
-                         target="_blank">Online orders</v-btn>
+                         target="_blank">Same-Day Orders</v-btn>
                   <v-menu v-if="$page.props.event_menu_categories.length > 0">
                     <template v-slot:activator="{ props }">
                       <v-btn
                           v-bind="props"
-                          variant="plain">Events menu</v-btn>
+                          variant="plain">Online Orders</v-btn>
                     </template>
                     <v-list>
                       <template v-for="event_menu_category in $page.props.event_menu_categories">
@@ -256,14 +256,14 @@ onBeforeUnmount(() => {
                           <v-btn class="mx-2 rounded-pill" variant="outlined"
                                  append-icon="mdi-open-in-new"
                                  href="https://order.toasttab.com/online/le-petit-four-bakery-380-washington-street"
-                                 target="_blank">Online orders</v-btn>
+                                 target="_blank">Same-Day Orders</v-btn>
                         </v-list-item>
                         <v-list-item v-if="$page.props.event_menu_categories.length > 0">
                           <v-menu>
                             <template v-slot:activator="{ props }">
                               <v-btn
                                   v-bind="props"
-                                  variant="plain">Events menu</v-btn>
+                                  variant="plain">Online Orders</v-btn>
                             </template>
                             <v-list elevation="10" rounded="md">
                               <template v-for="event_menu_category in $page.props.event_menu_categories">

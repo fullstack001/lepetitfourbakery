@@ -457,6 +457,19 @@ class ProductsController extends WebController
         }
     }
 
+    public function deleteEventsMenuCategory(EventMenuCategory $category)
+    {
+        try {
+            // Delete all related event menu products
+            EventMenuProduct::where('event_menu_category_id', $category->id)->delete();
+            // Delete the category
+            $category->delete();
+            return $this->success(null);
+        } catch (\Exception $e) {
+            return $this->error(null);
+        }
+    }
+
     public function manageEventsMenuProducts(EventMenuCategory $category)
     {
         $selected_products = $category->products;

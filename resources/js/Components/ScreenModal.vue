@@ -41,8 +41,8 @@ watchEffect(() => {
         scrollable
         data-lenis-prevent
     >
-      <v-card rounded="lg">
-        <div>
+      <v-card rounded="lg" style="max-height: 90vh; overflow: hidden; display: flex; flex-direction: column;">
+        <div style="overflow-y: auto; flex: 1;">
 
           <div class="text-sm text-gray-600">
             <slot name="content" />

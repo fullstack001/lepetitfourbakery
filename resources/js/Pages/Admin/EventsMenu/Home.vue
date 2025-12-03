@@ -1,6 +1,6 @@
 <script setup>
 import AdmLayout from '@/Layouts/AdmLayout.vue';
-import {Head} from "@inertiajs/vue3";
+import {Head, router} from "@inertiajs/vue3";
 import Row from "@/Components/Row.vue";
 import Col from "@/Components/Col.vue";
 import EventsMenuModal from "@/Components/EventsMenuModal.vue";
@@ -12,6 +12,15 @@ const props = defineProps({
 });
 
 const eventsMenuModal = ref(null);
+
+const deleteCategory = (category) => {
+  if (confirm(`Are you sure you want to delete "${category.name}"? This will also remove all products associated with this category.`)) {
+    router.post(route('admin.events_menu.delete_category', {category: category.uid}), {}, {
+      preserveScroll: true,
+      preserveState: false,
+    });
+  }
+};
 
 </script>
 
@@ -42,6 +51,13 @@ const eventsMenuModal = ref(null);
                     <v-btn
                         @click.prevent="eventsMenuModal.openCategory(category)"
                         variant="outlined" size="small">Edit category</v-btn>
+                  </div>
+                  <div>
+                    <v-btn
+                        @click.prevent="deleteCategory(category)"
+                        variant="outlined"
+                        color="error"
+                        size="small">Delete category</v-btn>
                   </div>
                 </Row>
               </Row>
