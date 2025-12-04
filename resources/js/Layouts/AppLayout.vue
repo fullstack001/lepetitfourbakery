@@ -146,7 +146,7 @@ onBeforeUnmount(() => {
                       v-if="false"
                       @click.prevent="$inertia.visit(route('catering_menu'))"
                       class="mx-2" variant="outlined">Catering menu</v-btn>
-                  <v-btn class="mx-2 rounded-pill" variant="outlined"
+                  <v-btn class="mx-2" variant="plain"
                          append-icon="mdi-open-in-new"
                          href="https://order.toasttab.com/online/le-petit-four-bakery-380-washington-street"
                          target="_blank">Same-Day Orders</v-btn>
@@ -173,6 +173,11 @@ onBeforeUnmount(() => {
                   <v-btn
                       @click.prevent="$inertia.visit(route('contact'))"
                       class="mx-2" variant="plain">Contact us</v-btn>
+                  <v-btn
+                      href="https://order.toasttab.com/egiftcards/le-petit-four-bakery-380-washington-street"
+                      target="_blank"
+                      class="mx-2 gift-card-btn rounded-pill"                    
+                      variant="outlined">Gift Card</v-btn>
                 </div>
                 <div class="uppercase hidden xl:flex">
 
@@ -253,7 +258,7 @@ onBeforeUnmount(() => {
                               variant="plain">Catering menu</v-btn>
                         </v-list-item>
                         <v-list-item>
-                          <v-btn class="mx-2 rounded-pill" variant="outlined"
+                          <v-btn class="mx-2" variant="plain"
                                  append-icon="mdi-open-in-new"
                                  href="https://order.toasttab.com/online/le-petit-four-bakery-380-washington-street"
                                  target="_blank">Same-Day Orders</v-btn>
@@ -286,6 +291,13 @@ onBeforeUnmount(() => {
                           <v-btn
                               @click.prevent="$inertia.visit(route('contact'))"
                               variant="plain">Contact us</v-btn>
+                        </v-list-item>
+                        <v-list-item>
+                          <v-btn
+                              href="https://order.toasttab.com/egiftcards/le-petit-four-bakery-380-washington-street"
+                              target="_blank"
+                              class="mx-2 gift-card-btn rounded-pill"                             
+                              variant="outlined">Gift Card</v-btn>
                         </v-list-item>
                       </v-list>
                       <hr>
@@ -484,5 +496,40 @@ header {
     -webkit-border-radius: 70px;
   }
 }
+
+.gift-card-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.gift-card-btn:hover {
+  background-color: #fff;
+}
+
+.gift-card-btn::before {
+  content: '';
+  position: absolute;
+  bottom: -120%;
+  left: 0;
+  width: 100%;
+  height: 130%;
+  background-image: url('/images/snowman.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.9;
+  transition: bottom 0.3s ease-in-out;
+  z-index: 0;
+}
+
+.gift-card-btn:hover::before {
+  bottom: 0;
+}
+
+.gift-card-btn :deep(.v-btn__content) {
+  position: relative;
+  z-index: 1;
+}
+
 
 </style>
