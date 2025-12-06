@@ -1,5 +1,5 @@
 <script setup>
-import {nextTick, onBeforeUnmount, onMounted, onUnmounted, reactive, ref} from 'vue';
+import {computed, nextTick, onBeforeUnmount, onMounted, onUnmounted, reactive, ref} from 'vue';
 import {Head, Link, router, usePage} from '@inertiajs/vue3';
 import ApplicationMark from '@/Components/ApplicationMark.vue';
 import Banner from '@/Components/Banner.vue';
@@ -31,6 +31,13 @@ const page = usePage();
 const scsm = ref(null);
 const savedScrollPosition = ref(0);
 const isScrolled = ref(false);
+
+// Check if current route is homepage
+const isHomePage = computed(() => {
+  // Use page.url to check if we're on the homepage
+  const url = page.url;
+  return url === '/' || url === '';
+});
 
 // Scroll event handler
 const handleScroll = () => {
@@ -129,24 +136,25 @@ onBeforeUnmount(() => {
         <div class="min-h-screen bg-white" ref="viewRef">
           <!-- Page Heading -->
           <!-- page heading -->
-          <header class="fixed w-full top-0 left-0 z-50" :class="isScrolled ? 'bg-white' : 'bg-transparent'">
+          <header class="fixed w-full top-0 left-0 z-50" :class="(isHomePage && !isScrolled) ? 'bg-transparent' : 'bg-[#c00100]'">
             <div class="mx-auto py-6 px-8 sm:px-6 lg:px-8">
               <div class="flex justify-between items-center">
                 <div @click.prevent="$inertia.visit(route('home'))" class="cursor-pointer">
-                  <Logo />
+                  <img src="/images/content/white-logo.png" alt="Logo" class="w-[200px]" >
+                  <!-- <Logo /> -->
                 </div>
                 <div class="uppercase hidden xl:flex">
                   <v-btn
                       @click.prevent="$inertia.visit(route('home'))"
-                      class="mx-2" variant="plain">Home</v-btn>
+                      class="mx-2 menu-text-white" variant="plain">Home</v-btn>
                   <v-btn
                       @click.prevent="$inertia.visit(route('la_boutique'))"
-                      class="mx-2" variant="plain">La boutique</v-btn>
+                      class="mx-2 menu-text-white" variant="plain">La boutique</v-btn>
                   <v-btn
                       v-if="false"
                       @click.prevent="$inertia.visit(route('catering_menu'))"
-                      class="mx-2" variant="outlined">Catering menu</v-btn>
-                  <v-btn class="mx-2" variant="plain"
+                      class="mx-2 menu-text-white" variant="outlined">Catering menu</v-btn>
+                  <v-btn class="mx-2 menu-text-white" variant="plain"
                          append-icon="mdi-open-in-new"
                          href="https://order.toasttab.com/online/le-petit-four-bakery-380-washington-street"
                          target="_blank">Same-Day Orders</v-btn>
@@ -154,6 +162,7 @@ onBeforeUnmount(() => {
                     <template v-slot:activator="{ props }">
                       <v-btn
                           v-bind="props"
+                          class="menu-text-white"
                           variant="plain">Online Orders</v-btn>
                     </template>
                     <v-list>
@@ -161,7 +170,7 @@ onBeforeUnmount(() => {
                         <v-list-item>
                           <v-btn
                               @click.prevent="$inertia.visit(route('events_menu', {category: event_menu_category.uid}))"
-                              class="mx-2" variant="plain">{{ event_menu_category.name }}</v-btn>
+                              class="mx-2 menu-text-red-500" variant="plain">{{ event_menu_category.name }}</v-btn>
                         </v-list-item>
                       </template>
                     </v-list>
@@ -169,21 +178,21 @@ onBeforeUnmount(() => {
                   <v-btn
                       v-if="$page.props.auth.user && $page.props.auth.user.can_subscribe"
                       @click.prevent="$inertia.visit(route('subscription'))"
-                      class="mx-2" variant="plain">Subscription</v-btn>
+                      class="mx-2 menu-text-white" variant="plain">Subscription</v-btn>
                   <v-btn
                       @click.prevent="$inertia.visit(route('contact'))"
-                      class="mx-2" variant="plain">Contact us</v-btn>
+                      class="mx-2 menu-text-white" variant="plain">Contact us</v-btn>
                   <v-btn
                       href="https://order.toasttab.com/egiftcards/le-petit-four-bakery-380-washington-street"
                       target="_blank"
-                      class="mx-2 gift-card-btn rounded-pill"                    
+                      class="mx-2 gift-card-btn rounded-pill menu-text-white"                    
                       variant="outlined">Gift Card</v-btn>
                 </div>
                 <div class="uppercase hidden xl:flex">
 
                   <v-btn
                       @click.prevent="$inertia.visit(route('cart'))"
-                      class="mx-2" variant="plain" prepend-icon="mdi-cart">Cart ({{ $page.props.cart_count }})</v-btn>
+                      class="mx-2 menu-text-white" variant="plain" prepend-icon="mdi-cart">Cart ({{ $page.props.cart_count }})</v-btn>
 
                   <div v-if="$page.props.auth.user">
 
@@ -192,7 +201,7 @@ onBeforeUnmount(() => {
                         <v-btn
                             prepend-icon="mdi-account-circle"
                             v-bind="props"
-                            class="mx-2" variant="plain">{{ $page.props.auth.user.name }}</v-btn>
+                            class="mx-2 menu-text-white" variant="plain">{{ $page.props.auth.user.name }}</v-btn>
                       </template>
                       <v-list>
                         <v-list-item>
@@ -208,15 +217,15 @@ onBeforeUnmount(() => {
                         v-if="$page.props.ia || $page.props.it"
                         prepend-icon="mdi-lock"
                         @click.prevent="$inertia.visit(route('admin'))"
-                        class="rounded-pill mx-2" variant="flat">Adm</v-btn>
+                        class="rounded-pill mx-2 admin-btn" variant="flat">Adm</v-btn>
                   </div>
                   <div v-else>
                     <v-btn
                         @click.prevent="$inertia.visit(route('register'))"
-                        class="mx-2" variant="plain">Register</v-btn>
+                        class="mx-2 menu-text-white" variant="plain">Register</v-btn>
                     <v-btn
                         @click.prevent="$inertia.visit(route('login'))"
-                        class="ms-2 bg-main" variant="flat">Login</v-btn>
+                        class="ms-2 login-btn" variant="flat">Login</v-btn>
                   </div>
                 </div>
                 <div class="flex xl:hidden">
@@ -337,13 +346,13 @@ onBeforeUnmount(() => {
                   v-if="$page.props.unpaid_orders > 0 && !['orders', 'order'].includes(route().current())"
                   class="mt-3"
               >
-                <v-card color="#ec8430" rounded="lg" class="text-center">
+                <v-card color="#fff" rounded="lg" class="text-center" >
                   <v-card-item>
                     <div class="flex flex-row w-full justify-center items-center flex-wrap gap-3">
-                      <p class="text-white">You have one or more unpaid orders.</p>
+                      <p class="text-black">You have one or more unpaid orders.</p>
                       <v-btn
                           @click.prevent="$inertia.visit(route('orders'))"
-                          size="small" color="white">View</v-btn>
+                          size="small" class="text-white" :style="{ backgroundColor:  '#c00100 !important'  }">View</v-btn>
                     </div>
                   </v-card-item>
                 </v-card>
@@ -504,6 +513,11 @@ header {
 
 .gift-card-btn:hover {
   background-color: #fff;
+  color: #c00100 !important;
+}
+
+.gift-card-btn:hover :deep(.v-btn__content) {
+  color: #c00100 !important;
 }
 
 .gift-card-btn::before {
@@ -529,6 +543,38 @@ header {
 .gift-card-btn :deep(.v-btn__content) {
   position: relative;
   z-index: 1;
+}
+
+.menu-text-white :deep(.v-btn__content) {
+  color: white !important;
+}
+
+.menu-text-white :deep(.v-icon) {
+  color: white !important;
+}
+
+.login-btn {
+  background-color: white !important;
+}
+
+.login-btn :deep(.v-btn__content) {
+  color: black !important;
+}
+
+.login-btn :deep(.v-icon) {
+  color: black !important;
+}
+
+.admin-btn {
+  background-color: white !important;
+}
+
+.admin-btn :deep(.v-btn__content) {
+  color: black !important;
+}
+
+.admin-btn :deep(.v-icon) {
+  color: black !important;
 }
 
 

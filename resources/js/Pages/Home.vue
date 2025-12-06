@@ -80,16 +80,16 @@ const toggleTeam = () => {
                cover
         >
 
-          <div class="m-0 lg:me-20 my-20 relative flex flex-col justify-center mt-[240px] px-20" style="height: 40%;">
-            <h1 class="text-4xl 2xl:text-6xl mb-5 uppercase text-black" v-html="props.content.hero_title" />
-            <p class="text-lg md:text-2xl text-black" v-html="props.content.hero_introduction" />
+          <div class="m-0 lg:me-20 my-20 relative flex flex-col justify-center mt-[180px] px-20" style="height: 40%;">
+            <h1 class="text-4xl 2xl:text-6xl mb-5 uppercase text-white" v-html="props.content.hero_title" />
+            <p class="text-lg md:text-2xl text-white" v-html="props.content.hero_introduction" />
             <div class="mt-8">
               <div class="flex flex-row flex-wrap justify-center items-center gap-2 w-full">
                 <template v-for="i in 2">
                   <div class="mb-5">
                     <NavButton
                         v-if="props.content[`hero_button_${i}_active`] == 1"
-                        color="black"
+                        class="bg-white text-black"
                         :href="props.content[`hero_button_${i}_url`]">{{ props.content[`hero_button_${i}_text`] }}</NavButton>
                     <NavButton
                         v-else
@@ -114,15 +114,16 @@ const toggleTeam = () => {
             </div>
             <div class="flex h-full items-center col-span-4">
               <div class="max-w-3xl mx-auto m-0 lg:me-20 my-20">
-                <h1 class="text-4xl 2xl:text-6xl mb-5 uppercase text-black text-start" v-html="props.content.hero_title" />
-                <p class="text-lg md:text-2xl text-black text-start" v-html="props.content.hero_introduction" />
+                <h1 class="text-4xl 2xl:text-6xl mb-5 uppercase text-white text-start" v-html="props.content.hero_title" />
+                <p class="text-lg md:text-2xl text-black text-white" v-html="props.content.hero_introduction" />
                 <div class="mt-8">
                   <div class="flex flex-row flex-wrap items-center gap-2 w-full">
                     <template v-for="i in 2">
                       <div class="mb-5">
                         <NavButton
                             v-if="props.content[`hero_button_${i}_active`] == 1"
-                            color="black"
+                            class="bg-white text-black"
+
                             :href="props.content[`hero_button_${i}_url`]">{{ props.content[`hero_button_${i}_text`] }}</NavButton>
                         <NavButton
                             v-else
