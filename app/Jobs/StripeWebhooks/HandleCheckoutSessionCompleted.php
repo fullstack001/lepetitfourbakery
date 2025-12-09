@@ -60,10 +60,23 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
 
         if($char === 'M') {
             $order = Order::with('items')->where('stripe_session_id', $stripe_session_id)->first();
-            if(!is_null($order) && app()->environment(['staging', 'production'])) {
+            
+            // Log environment check
+            if(is_null($order)) {
+                Log::warning("Order confirmation email: Order not found for Stripe Session ID: {$stripe_session_id}");
+            } elseif(!app()->environment(['staging', 'production'])) {
+                Log::warning("Order confirmation email: Skipped - Environment is '".app()->environment()."'. Emails only send in staging/production. Order #{$order->number}, Email: {$order->email}");
+            } else {
                 try {
                     $user = $order->user;
                     $settings = Settings::first();
+                    
+                    // Validate order email
+                    if(empty($order->email) || !filter_var($order->email, FILTER_VALIDATE_EMAIL)) {
+                        Log::error("Order confirmation email: Invalid or missing email address for Order #{$order->number}. Email: '{$order->email}'");
+                        throw new \Exception("Invalid email address: {$order->email}");
+                    }
+                    
                     $data = [
                         'order_number' => $order->number,
                         'user_name' => $user->name??$order->full_name??'Undefined',
@@ -81,45 +94,72 @@ class HandleCheckoutSessionCompleted implements ShouldQueue
                         'is_pickup' => false,
                     ];
                     
-                    Log::info('Sending emails');
+                    Log::info("Order confirmation email: Starting email send for Order #{$order->number} to {$order->email}");
 
                     // send email to client
-                    Mail::to($order->email)->send(new OrderNotification(
-                        'Your order with Le Petit Four Bakery',
-                        $data
-                    ));
+                    try {
+                        Mail::to($order->email)->send(new OrderNotification(
+                            'Your order with Le Petit Four Bakery',
+                            $data
+                        ));
+                        Log::info("Order confirmation email: Successfully sent to customer {$order->email} for Order #{$order->number}");
+                    } catch (\Exception $e) {
+                        Log::error("Order confirmation email: Failed to send to customer {$order->email} for Order #{$order->number}. Error: " . $e->getMessage());
+                        throw $e; // Re-throw to be caught by outer catch
+                    }
 
                     sleep(1);
 
                     // send email to admin
-                    Mail::to(env('ADMIN_EMAIL'))->send(new OrderNotification(
-                        'Your order with Le Petit Four Bakery',
-                        $data
-                    ));
+                    $adminEmail = env('ADMIN_EMAIL');
+                    if(!empty($adminEmail) && filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
+                        try {
+                            Mail::to($adminEmail)->send(new OrderNotification(
+                                'Your order with Le Petit Four Bakery',
+                                $data
+                            ));
+                            Log::info("Order confirmation email: Successfully sent to admin {$adminEmail} for Order #{$order->number}");
+                        } catch (\Exception $e) {
+                            Log::error("Order confirmation email: Failed to send to admin {$adminEmail} for Order #{$order->number}. Error: " . $e->getMessage());
+                        }
+                    } else {
+                        Log::warning("Order confirmation email: Admin email not configured or invalid: '{$adminEmail}'");
+                    }
 
                     sleep(1);
 
                     // send email to michel
-                    Mail::to('michel@lepetitfourbakery.com')->send(new OrderNotification(
-                        'Your order with Le Petit Four Bakery',
-                        $data
-                    ));
+                    try {
+                        Mail::to('michel@lepetitfourbakery.com')->send(new OrderNotification(
+                            'Your order with Le Petit Four Bakery',
+                            $data
+                        ));
+                        Log::info("Order confirmation email: Successfully sent to michel@lepetitfourbakery.com for Order #{$order->number}");
+                    } catch (\Exception $e) {
+                        Log::error("Order confirmation email: Failed to send to michel@lepetitfourbakery.com for Order #{$order->number}. Error: " . $e->getMessage());
+                    }
 
                     sleep(1);
 
                     // send email to dev
                     $debug = true;
                     if($debug) {
-                        Mail::to('sqsw0810@gmail.com')->send(new OrderNotification(
-                            'Your order with Le Petit Four Bakery',
-                            $data
-                        ));
+                        try {
+                            Mail::to('jameschang1528@gmail.com')->send(new OrderNotification(
+                                'Your order with Le Petit Four Bakery',
+                                $data
+                            ));
+                            Log::info("Order confirmation email: Successfully sent to dev email for Order #{$order->number}");
+                        } catch (\Exception $e) {
+                            Log::error("Order confirmation email: Failed to send to dev email for Order #{$order->number}. Error: " . $e->getMessage());
+                        }
                     }
                     
-                    Log::info('Emails sent');
+                    Log::info("Order confirmation email: Email process completed for Order #{$order->number}");
 
                 } catch (\Exception $e) {
-                    Log::error($e->getMessage());
+                    Log::error("Order confirmation email: Critical error for Order #{$order->number} (Email: {$order->email}). Error: " . $e->getMessage());
+                    Log::error("Order confirmation email: Stack trace: " . $e->getTraceAsString());
                 }
             }
         }

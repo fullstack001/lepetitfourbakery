@@ -377,10 +377,17 @@ class AdminController extends WebController
             if(strtolower($status) === 'ready') {
                 $user = $order->user;
                 $settings = Settings::first();
+                
+                // Validate order email
+                if(empty($order->email) || !filter_var($order->email, FILTER_VALIDATE_EMAIL)) {
+                    Log::error("Order ready email: Invalid or missing email address for Order #{$order->number}. Email: '{$order->email}'");
+                    throw new \Exception("Cannot send 'order ready' email: Invalid email address for Order #{$order->number}");
+                }
+                
                 $data = [
                     'order_number' => $order->number,
-                    'user_name' => $user->name,
-                    'user_email' => $user->email,
+                    'user_name' => $user->name ?? $order->full_name ?? 'Customer',
+                    'user_email' => $user->email ?? $order->email,
                     'admin_email' => env('ADMIN_EMAIL'),
                     'amount_formatted' => '$' . number_format($order->amount, 2, '.',','),
                     'date_formatted' => $order->created_at_formatted,
@@ -394,10 +401,17 @@ class AdminController extends WebController
                     'is_pickup' => true,
                 ];
 
-                Mail::to($order->email)->send(new OrderNotification(
-                    'Your order is ready!',
-                    $data
-                ));
+                try {
+                    Log::info("Order ready email: Sending 'order ready' email for Order #{$order->number} to {$order->email}");
+                    Mail::to($order->email)->send(new OrderNotification(
+                        'Your order is ready!',
+                        $data
+                    ));
+                    Log::info("Order ready email: Successfully sent to {$order->email} for Order #{$order->number}");
+                } catch (\Exception $e) {
+                    Log::error("Order ready email: Failed to send to {$order->email} for Order #{$order->number}. Error: " . $e->getMessage());
+                    throw $e;
+                }
             }
         } catch (\Exception $e) {
             Log::error($e->getMessage());
